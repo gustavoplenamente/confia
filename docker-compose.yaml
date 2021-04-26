@@ -1,0 +1,10 @@
+version: "3.8"
+services:
+  database:
+    image: mongo:4
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: ime_confia
+      MONGO_INITDB_DATABASE: news-db
