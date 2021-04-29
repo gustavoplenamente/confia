@@ -1,5 +1,7 @@
-from dotenv import dotenv_values
+import os
 
-config = dotenv_values(".env")
+from dotenv import load_dotenv
 
-DB_URI = config["DB_URI"]
+load_dotenv()
+
+DB_URI = os.getenv('DB_URI')

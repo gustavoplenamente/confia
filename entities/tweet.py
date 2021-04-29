@@ -1,57 +1,27 @@
 from mongoengine import (
-    EmbeddedDocument,
     StringField,
     LongField,
     BooleanField,
-    EmbeddedDocumentField,
     IntField,
-    ListField,
-    EmbeddedDocumentListField,
-    URLField,
+    ReferenceField, DynamicDocument,
 )
 
-from entities.user import User
+from entities.news import NewsContent
 
 
-class UserMention(EmbeddedDocument):
-    screen_name = StringField()
-    name = StringField()
+class Tweet(DynamicDocument):
     id = LongField()
-    id_str = StringField()
-    indices = ListField(IntField())
-
-
-class TweetEntities(EmbeddedDocument):
-    hashtags = ListField(StringField())
-    symbols = ListField(StringField())
-    user_mentions = EmbeddedDocumentListField(UserMention)
-    urls = ListField(URLField)
-
-
-class Tweet(EmbeddedDocument):
     created_at = StringField()
-    id = LongField()
-    id_str = StringField()
-    text = StringField()
-    truncated = BooleanField()
-    entities = EmbeddedDocumentField(TweetEntities)
-    source = StringField()
-    in_reply_to_status_id = LongField()
-    in_reply_to_status_id_str = StringField()
-    in_reply_to_user_id = LongField()
-    in_reply_to_user_id_str = StringField()
-    in_reply_to_screen_name = StringField()
-    user = EmbeddedDocument(User)
-    geo = None
-    coordinates = None
-    place = None
-    is_quote_status = BooleanField()
+    news = ReferenceField(NewsContent)
     retweet_count = IntField()
     favorite_count = IntField()
     favorited = BooleanField()
     retweeted = BooleanField()
-    lang = StringField()
+
+    meta = {
+        'allow_inheritance': True,
+    }
 
 
 class Retweet(Tweet):
-    retweeted_status = EmbeddedDocumentField(Tweet)
+    retweeted_status = ReferenceField(Tweet)

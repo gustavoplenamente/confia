@@ -39,12 +39,12 @@ class User(EmbeddedDocument):
     listed_count = IntField()
     created_at = StringField()
     favourites_count = IntField()
-    utc_offset = None
-    time_zone = None
+    utc_offset = StringField()
+    time_zone = StringField()
     geo_enabled = BooleanField()
     verified = BooleanField()
     statuses_count = IntField()
-    lang = None
+    lang = StringField()
     contributors_enabled = BooleanField()
     is_translator = BooleanField()
     is_translation_enabled = BooleanField()

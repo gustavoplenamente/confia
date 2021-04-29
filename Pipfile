@@ -7,6 +7,8 @@ name = "pypi"
 pymongo = {extras = ["srv"], version = "*"}
 python-dotenv = "*"
 mongoengine = "*"
+scikit-learn = "*"
+pandas = "*"
 
 [dev-packages]
 
