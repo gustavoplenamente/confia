@@ -18,11 +18,11 @@ def get_file(path: str, file_name: str):
     return os.path.join(path, file_name)
 
 
-def get_news_content(path: str, classification: str) -> NewsContent:
+def get_news_content(path: str, **kwargs) -> NewsContent:
     news_content_file = get_file(path, 'news content.json')
     with open(news_content_file) as news_content:
         data = json.load(news_content)
-        data['classification'] = classification
+        data.update(kwargs)
         return NewsContent(**data)
 
 

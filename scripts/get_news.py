@@ -20,7 +20,11 @@ if __name__ == '__main__':
         for folder in get_dirs(base_path):
             path = base_path + f'/{folder}'
 
-            news_content = get_news_content(path, classification=sub_folder).to_mongo()
+            news_content = get_news_content(
+                path,
+                classification=sub_folder,
+                news_id=folder
+            ).to_mongo()
             tweets = [
                 tweet.to_mongo() for tweet in get_tweets(path, news_content)
             ]

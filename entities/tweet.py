@@ -3,10 +3,14 @@ from mongoengine import (
     LongField,
     BooleanField,
     IntField,
-    ReferenceField, DynamicDocument,
+    ReferenceField, DynamicDocument, DynamicEmbeddedDocument, EmbeddedDocumentField,
 )
 
 from entities.news import NewsContent
+
+
+class User(DynamicEmbeddedDocument):
+    pass
 
 
 class Tweet(DynamicDocument):
@@ -17,6 +21,7 @@ class Tweet(DynamicDocument):
     favorite_count = IntField()
     favorited = BooleanField()
     retweeted = BooleanField()
+    user = EmbeddedDocumentField(User)
 
     meta = {
         'allow_inheritance': True,
