@@ -1,8 +1,14 @@
-from typing import List, Set, Dict
+from typing import List
 
+import numpy as np
 import pymongo
 from pymongo.collection import Collection
 
+from dao.aggregation_pipelines import (
+    PROJECT_NEWS_ID_AND_USER_ID,
+    PROJECT_USER_ID,
+    union_with, GROUP_USER_ID, REPLACE_ROOT_FOR_NEWS_AND_USER,
+)
 from settings import DB_URI
 
 
@@ -14,18 +20,41 @@ class DAO:
         self.tweets: Collection = self.db.tweets
         self.retweets: Collection = self.db.retweets
 
-    def query_news(self) -> List[Dict[str, str]]:
-        return self.news.find({}, {
+    def query_news(self) -> np.ndarray:
+        news_set = self.news.find({}, {
             '_id': 0,
             'news_id': 1,
             'classification': 1,
         })
+        return np.array([
+            [
+                news['news_id'],
+                news['classification']
+            ]
+            for news in news_set
+        ])
 
-    def query_users(self) -> Set[str]:
-        tweet_users: List[str] = self.tweets.distinct('user.id_str')
-        retweet_users: List[str] = self.retweets.distinct('user.id_str')
+    def query_users(self) -> np.ndarray:
+        users = self.tweets.aggregate([
+            PROJECT_USER_ID,
+            union_with('retweets', [PROJECT_USER_ID]),
+            GROUP_USER_ID
+        ])
+        return np.array([
+            user['_id']
+            for user in users
+        ])
 
-        return set().union(tweet_users, retweet_users)
-
-    def query_user_news_relation(self):
-        pass
+    def query_user_news_relation(self) -> np.ndarray:
+        relations = self.tweets.aggregate([
+            PROJECT_NEWS_ID_AND_USER_ID,
+            union_with('retweets', [PROJECT_NEWS_ID_AND_USER_ID]),
+            REPLACE_ROOT_FOR_NEWS_AND_USER
+        ])
+        return np.array([
+            [
+                relation['news_id'],
+                relation['user_id']
+            ]
+            for relation in relations
+        ])
